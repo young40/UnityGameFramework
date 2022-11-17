@@ -183,7 +183,10 @@ namespace UnityGameFramework.Runtime
         {
             try
             {
-                m_UIFormLogic.OnClose(isShutdown, userData);
+                if (m_UIFormLogic != null)
+                {
+                    m_UIFormLogic.OnClose(isShutdown, userData);
+                }
             }
             catch (Exception exception)
             {
@@ -198,7 +201,10 @@ namespace UnityGameFramework.Runtime
         {
             try
             {
-                m_UIFormLogic.OnPause();
+                if (m_UIFormLogic != null)
+                {
+                    m_UIFormLogic.OnPause();
+                }
             }
             catch (Exception exception)
             {
