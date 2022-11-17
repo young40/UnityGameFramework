@@ -33,7 +33,7 @@ namespace UnityGameFramework.Runtime
         {
             get
             {
-                return m_AudioSource.isPlaying;
+                return m_AudioSource != null ? m_AudioSource.isPlaying : false;
             }
         }
 
