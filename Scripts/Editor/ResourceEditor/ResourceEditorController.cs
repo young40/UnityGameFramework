@@ -257,19 +257,19 @@ namespace UnityGameFramework.Editor.ResourceTools
                             break;
 
                         case "SourceAssetUnionTypeFilter":
-                            SourceAssetUnionTypeFilter = xmlNode.InnerText;
+                            SourceAssetUnionTypeFilter = xmlNode.InnerText.Trim();
                             break;
 
                         case "SourceAssetUnionLabelFilter":
-                            SourceAssetUnionLabelFilter = xmlNode.InnerText;
+                            SourceAssetUnionLabelFilter = xmlNode.InnerText.Trim();
                             break;
 
                         case "SourceAssetExceptTypeFilter":
-                            SourceAssetExceptTypeFilter = xmlNode.InnerText;
+                            SourceAssetExceptTypeFilter = xmlNode.InnerText.Trim();
                             break;
 
                         case "SourceAssetExceptLabelFilter":
-                            SourceAssetExceptLabelFilter = xmlNode.InnerText;
+                            SourceAssetExceptLabelFilter = xmlNode.InnerText.Trim();
                             break;
 
                         case "AssetSorter":
