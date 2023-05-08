@@ -92,6 +92,7 @@ namespace UnityGameFramework.Runtime
                 {
                     m_LastWindowScale = m_DebuggerComponent.WindowScale;
                     m_SettingComponent.SetFloat("Debugger.Window.Scale", m_DebuggerComponent.WindowScale);
+                    m_SettingComponent.Save();
                 }
             }
 
