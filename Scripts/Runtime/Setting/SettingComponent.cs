@@ -81,7 +81,9 @@ namespace UnityGameFramework.Runtime
         /// </summary>
         public void Save()
         {
-            m_SettingManager.Save();
+            bool rs = m_SettingManager.Save();
+
+            Log.Debug($"Save Result: {rs}");
         }
 
         /// <summary>
