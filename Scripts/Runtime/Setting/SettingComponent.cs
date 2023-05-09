@@ -211,7 +211,11 @@ namespace UnityGameFramework.Runtime
         /// <returns>读取的浮点数值。</returns>
         public float GetFloat(string settingName, float defaultValue)
         {
-            return m_SettingManager.GetFloat(settingName, defaultValue);
+            float value = m_SettingManager.GetFloat(settingName, defaultValue);
+
+            Log.Debug($"GetFloat {settingName} ({value}) ({defaultValue})");
+
+            return value;
         }
 
         /// <summary>

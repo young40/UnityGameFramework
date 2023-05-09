@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+using UnityGameFramework.Runtime;
 
 namespace GameFramework.Setting
 {
@@ -341,7 +342,11 @@ namespace GameFramework.Setting
                 throw new GameFrameworkException("Setting name is invalid.");
             }
 
-            return m_SettingHelper.GetFloat(settingName, defaultValue);
+            float value =  m_SettingHelper.GetFloat(settingName, defaultValue);
+
+            Log.Debug($"Setting Manager: {settingName} ({value}) ({defaultValue})");
+
+            return value;
         }
 
         /// <summary>
