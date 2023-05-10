@@ -365,6 +365,7 @@ namespace UnityGameFramework.Runtime
 
         private void Awake()
         {
+            Log.Debug("DefaultSettingHelper Awake");
             m_FilePath = Utility.Path.GetRegularPath(Path.Combine(Application.persistentDataPath, SettingFileName));
             m_Settings = new DefaultSetting();
             m_Serializer = new DefaultSettingSerializer();
@@ -380,6 +381,7 @@ namespace UnityGameFramework.Runtime
 
         private DefaultSetting DeserializeDefaultSettingCallback(Stream stream)
         {
+            Log.Debug("DefaultSettingHelper DeserializeDefaultSettingCallback");
             m_Settings.Deserialize(stream);
             return m_Settings;
         }
