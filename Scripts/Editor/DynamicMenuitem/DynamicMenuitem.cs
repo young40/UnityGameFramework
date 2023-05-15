@@ -5,6 +5,7 @@ using System.Reflection;
 using System;
 using System.Text;
 using System.IO;
+using System.Linq;
 
 namespace UnityGameFramework.Editor
 {
@@ -120,29 +121,52 @@ namespace UnityGameFramework.Editor
             DynamicMenuItemAttribute dynmicAttr = method.GetCustomAttribute<DynamicMenuItemAttribute>();
             Debug.Log(group);
 
-            for (int i = 0; i < group.List.Length; i++)
-            {
-                var item = group.List[i];
+            string nameJoin = string.Join(',', group.Names).Replace(",", "\",\"");
+            string valuesJoin = string.Join(',', group.Values).Replace(",", "\",\"");
 
-                string code = methodTpl.Replace("__REPLACE_MENU_PATH", $"{menuPrex}{dynmicAttr.ItemName}/{item.name}");
+            string nameStr = $"new string[] {{ \"{nameJoin}\" }} ";
+            string valueStr = $"new string[] {{ \"{valuesJoin}\" }} ";
+
+            if (!PrefHasKey(group.Key))
+            {
+                PrefSetString(group.Key, group.DefaultValue);
+            }
+
+            for (int i = 0; i < group.Values.Length; i++)
+            {
+                string name = group.Names[i];
+                string value = group.Values[i];
+
+                string code = methodTpl.Replace("__REPLACE_MENU_PATH", $"{menuPrex}{dynmicAttr.ItemName}/{name}");
 
                 code = code.Replace("__REPLACE_MENU_PRIORITY", (dynmicAttr.Priority + i).ToString());
 
-                code = code.Replace("__REPLACE_MENU_METHOD_NAME", $"{method.DeclaringType.FullName}_{method.Name}_{item.value}".Replace(".", "_"));
-                code = code.Replace("__REPLACE_MENU_CALL", @$"{method.DeclaringType.FullName}.{method.Name}(""{item.value}"")");
+                code = code.Replace("__REPLACE_MENU_METHOD_NAME",
+                    $"{method.DeclaringType.FullName}_{method.Name}_{value}".Replace(".", "_"));
+                code = code.Replace("__REPLACE_MENU_CALL",
+                    @$"{method.DeclaringType.FullName}.{method.Name}(""{value}"")");
 
                 string valueSettingStr = "";
                 {
                     valueSettingStr = $@"
-        UnityGameFramework.Editor.DynamicMenuItem.PrefSetString(""{dynmicAttr.ItemName}"", ""{item.value}"");
-        UnityGameFramework.Editor.DynamicMenuItem.SetGroupMenuChecked(""{menuPrex}{dynmicAttr.ItemName}"", ""{dynmicAttr.ItemName}"");
+        UnityGameFramework.Editor.DynamicMenuItem.PrefSetString(""{group.Key}"", ""{value}"");
+        UnityGameFramework.Editor.DynamicMenuItem.SetGroupMenuChecked(""{menuPrex}{dynmicAttr.ItemName}"", ""{group.Key}"", {valueStr}, ""{group.DefaultValue}"" , {nameStr});
 ";
-
-
                     code = code.Replace("__REPLACE_MENU_UPDATE", valueSettingStr);
                 }
 
                 sb.AppendLine(code);
+            }
+
+            {
+                string valueSettingStr = "";
+                {
+                    valueSettingStr = $@"
+                        UnityGameFramework.Editor.DynamicMenuItem.SetGroupMenuChecked(""{menuPrex}{dynmicAttr.ItemName}"", ""{group.Key}"", {valueStr}, ""{group.DefaultValue}"" , {nameStr});
+                ";
+                }
+
+                sbInitCall.AppendLine(valueSettingStr);
             }
         }
 

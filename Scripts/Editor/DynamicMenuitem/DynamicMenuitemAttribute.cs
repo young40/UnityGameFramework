@@ -37,7 +37,9 @@ namespace UnityGameFramework.Editor
         public string Key { get; private set; }
         public string DefaultValue { get; private set; }
 
-        public (string value, string name)[] List { get; private set; }
+        public string[] Values { get; private set; }
+
+        public string[] Names { get; private set; }
 
         public GroupMenuItemAttribute(string key, string defaultValue, string[] values, string[] names = null)
         {
@@ -54,12 +56,8 @@ namespace UnityGameFramework.Editor
                 throw new Exception($"DynamicMenuItem: GroupMenuItem keys NOT contains {defaultValue}.");
             }
 
-            List = new (string value, string name)[values.Length];
-
-            for (int i = 0; i < values.Length; i++)
-            {
-                List[i] = (values[i], names == null ? values[i] : names[i]);
-            }
+            Values = values;
+            Names = names ?? values;
         }
     }
 }
