@@ -76,6 +76,13 @@ namespace UnityGameFramework.Editor
 
         private static void GetMenuItemCode(MethodInfo method, StringBuilder sb, StringBuilder sbInitCall)
         {
+            GroupMenuItemAttribute groupMenuItemAttribute = method.GetCustomAttribute<GroupMenuItemAttribute>();
+            if (groupMenuItemAttribute != null)
+            {
+                GetGroupMenuItemCode(method, sb, sbInitCall);
+                return;
+            }
+
             DynamicMenuItemAttribute dynmicAttr = method.GetCustomAttribute<DynamicMenuItemAttribute>();
 
             string code = methodTpl.Replace("__REPLACE_MENU_PATH", $"{menuPrex}{dynmicAttr.ItemName}");
@@ -105,6 +112,38 @@ namespace UnityGameFramework.Editor
             }
 
             sb.AppendLine(code);
+        }
+
+        private static void GetGroupMenuItemCode(MethodInfo method, StringBuilder sb, StringBuilder sbInitCall)
+        {
+            GroupMenuItemAttribute group = method.GetCustomAttribute<GroupMenuItemAttribute>();
+            DynamicMenuItemAttribute dynmicAttr = method.GetCustomAttribute<DynamicMenuItemAttribute>();
+            Debug.Log(group);
+
+            for (int i = 0; i < group.List.Length; i++)
+            {
+                var item = group.List[i];
+
+                string code = methodTpl.Replace("__REPLACE_MENU_PATH", $"{menuPrex}{dynmicAttr.ItemName}/{item.name}");
+
+                code = code.Replace("__REPLACE_MENU_PRIORITY", (dynmicAttr.Priority + i).ToString());
+
+                code = code.Replace("__REPLACE_MENU_METHOD_NAME", $"{method.DeclaringType.FullName}_{method.Name}_{item.value}".Replace(".", "_"));
+                code = code.Replace("__REPLACE_MENU_CALL", @$"{method.DeclaringType.FullName}.{method.Name}(""{item.value}"")");
+
+                string valueSettingStr = "";
+                {
+                    valueSettingStr = $@"
+        UnityGameFramework.Editor.DynamicMenuItem.PrefSetString(""{dynmicAttr.ItemName}"", ""{item.value}"");
+        UnityGameFramework.Editor.DynamicMenuItem.SetGroupMenuChecked(""{menuPrex}{dynmicAttr.ItemName}"", ""{dynmicAttr.ItemName}"");
+";
+
+
+                    code = code.Replace("__REPLACE_MENU_UPDATE", valueSettingStr);
+                }
+
+                sb.AppendLine(code);
+            }
         }
 
         private static bool CheckMethod(MethodInfo method)
@@ -142,11 +181,35 @@ namespace UnityGameFramework.Editor
             return PlayerPrefs.GetString($"{prefPrex}{key}", defaultValue.ToString()) == true.ToString();
         }
 
+        public static void PrefSetString(string key, string value)
+        {
+            PlayerPrefs.SetString($"{prefPrex}{key}", value);
+            PlayerPrefs.Save();
+        }
+
+        public static string PrefGetString(string key, string defaultValue)
+        {
+            return PlayerPrefs.GetString($"{prefPrex}{key}", defaultValue);
+        }
+
         public static void SetBoolMenuChecked(string menu, string key)
         {
             bool shouldChecked = PrefGetBool(key, false);
 
             Menu.SetChecked(menu, shouldChecked);
+        }
+
+        public static void SetGroupMenuChecked(string menuPref, string key, string[] values, string defultValue, string[] names)
+        {
+            string savedValue = PrefGetString(key, defultValue);
+
+            for (int i = 0; i < values.Length; i++)
+            {
+                string value = values[i];
+                string name = names[i];
+
+                Menu.SetChecked($"{menuPref}/{name}", value == savedValue);
+            }
         }
 
         public static void ToggleBoolMenuChecked(string menu, string key)
