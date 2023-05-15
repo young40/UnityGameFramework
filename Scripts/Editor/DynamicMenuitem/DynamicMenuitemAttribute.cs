@@ -20,10 +20,12 @@ namespace UnityGameFramework.Editor
     public class BoolMenuItemAttribute : System.Attribute
     {
         public string Key { get; private set; }
+        public bool DefaultValue { get; private set; }
 
-        public BoolMenuItemAttribute(string key)
+        public BoolMenuItemAttribute(string key, bool defaultValue = false)
         {
             Key = key;
+            DefaultValue = defaultValue;
         }
     }
 }

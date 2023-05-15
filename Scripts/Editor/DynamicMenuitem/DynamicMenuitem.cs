@@ -19,6 +19,7 @@ namespace UnityGameFramework.Editor
         private static void ReGeneratorDynamicMenuitemCSharpScript()
         {
             StringBuilder sb = new StringBuilder();
+            StringBuilder sbInitCall = new StringBuilder();
 
             foreach (Assembly assembly in GetAssemblies())
             {
@@ -26,7 +27,7 @@ namespace UnityGameFramework.Editor
 
                 foreach (MethodInfo method in methods)
                 {
-                    GetMenuItemCode(method, sb);
+                    GetMenuItemCode(method, sb, sbInitCall);
                 }
             }
 
@@ -34,6 +35,7 @@ namespace UnityGameFramework.Editor
             string classStr = classTpl.Replace("__REPLACE_CLASS_NAME", className);
 
             classStr = classStr.Replace("__REPLACE_METHOD_BODY", sb.ToString());
+            classStr = classStr.Replace("__REPLACE_INIT_CALL", sbInitCall.ToString());
 
             File.WriteAllText(csharpScriptPath, classStr);
 
@@ -72,16 +74,35 @@ namespace UnityGameFramework.Editor
             return methods.ToArray();
         }
 
-        private static void GetMenuItemCode(MethodInfo method, StringBuilder sb)
+        private static void GetMenuItemCode(MethodInfo method, StringBuilder sb, StringBuilder sbInitCall)
         {
-            DynamicMenuItemAttribute arrt = method.GetCustomAttribute<DynamicMenuItemAttribute>();
+            DynamicMenuItemAttribute dynmicAttr = method.GetCustomAttribute<DynamicMenuItemAttribute>();
 
-            string code = methodTpl.Replace("__REPLACE_MENU_PATH", $"{menuPrex}{arrt.ItemName}");
+            string code = methodTpl.Replace("__REPLACE_MENU_PATH", $"{menuPrex}{dynmicAttr.ItemName}");
 
-            code = code.Replace("__REPLACE_MENU_PRIORITY", arrt.Priority.ToString());
+            code = code.Replace("__REPLACE_MENU_PRIORITY", dynmicAttr.Priority.ToString());
 
             code = code.Replace("__REPLACE_MENU_METHOD_NAME", $"{method.DeclaringType.FullName}_{method.Name}".Replace(".", "_"));
             code = code.Replace("__REPLACE_MENU_CALL", $"{method.DeclaringType.FullName}.{method.Name}()");
+
+            string valueSettingStr = "";
+            {
+                BoolMenuItemAttribute attr = method.GetCustomAttribute<BoolMenuItemAttribute>();
+                if (attr != null)
+                {
+                    if (!PrefHasKey(attr.Key))
+                    {
+                        PrefSetBool(attr.Key, attr.DefaultValue);
+                    }
+
+                    valueSettingStr = @$"UnityGameFramework.Editor.DynamicMenuItem.ToggleBoolMenuChecked(""{menuPrex}{dynmicAttr.ItemName}"", ""{attr.Key}"");";
+
+                    string initStr = @$"            UnityGameFramework.Editor.DynamicMenuItem.SetBoolMenuChecked(""{menuPrex}{dynmicAttr.ItemName}"", ""{attr.Key}"");";
+                    sbInitCall.AppendLine(initStr);
+                }
+
+                code = code.Replace("__REPLACE_MENU_UPDATE", valueSettingStr);
+            }
 
             sb.AppendLine(code);
         }
@@ -103,6 +124,38 @@ namespace UnityGameFramework.Editor
             }
 
             return result;
+        }
+
+        public static bool PrefHasKey(string key)
+        {
+            return PlayerPrefs.HasKey($"{prefPrex}{key}");
+        }
+
+        public static void PrefSetBool(string key, bool value)
+        {
+            PlayerPrefs.SetString($"{prefPrex}{key}", value.ToString());
+            PlayerPrefs.Save();
+        }
+
+        public static bool PrefGetBool(string key, bool defaultValue)
+        {
+            return PlayerPrefs.GetString($"{prefPrex}{key}", defaultValue.ToString()) == true.ToString();
+        }
+
+        public static void SetBoolMenuChecked(string menu, string key)
+        {
+            bool shouldChecked = PrefGetBool(key, false);
+
+            Menu.SetChecked(menu, shouldChecked);
+        }
+
+        public static void ToggleBoolMenuChecked(string menu, string key)
+        {
+            bool lastValue = Menu.GetChecked(menu);
+
+            PrefSetBool(key, !lastValue);
+
+            SetBoolMenuChecked(menu, key);
         }
 
         private static void DebugLog(string message, params object[] args)
