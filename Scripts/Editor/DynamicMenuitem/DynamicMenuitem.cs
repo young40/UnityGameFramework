@@ -22,15 +22,36 @@ namespace UnityGameFramework.Editor
             StringBuilder sb = new StringBuilder();
             StringBuilder sbInitCall = new StringBuilder();
 
+            string[] cachedAssemblyName = null;
+            if (!string.IsNullOrEmpty(PrefGetString("CachedAssemblyNames", "")))
+            {
+                cachedAssemblyName = PrefGetString("CachedAssemblyNames", "").Split('|');
+            }
+
+            List<string> list = new List<string>();
+
             foreach (Assembly assembly in GetAssemblies())
             {
+                if (cachedAssemblyName != null && !cachedAssemblyName.Contains(assembly.FullName))
+                {
+                    continue;
+                }
+
                 MethodInfo[] methods = GetMethods(assembly);
 
+                bool found = false;
                 foreach (MethodInfo method in methods)
                 {
+                    found = true;
                     GetMenuItemCode(method, sb, sbInitCall);
                 }
+
+                if (found)
+                {
+                    list.Add(assembly.FullName);
+                }
             }
+            PrefSetString("CachedAssemblyNames", string.Join("|", list));
 
             string className = System.IO.Path.GetFileNameWithoutExtension(csharpScriptPath);
             string classStr = classTpl.Replace("__REPLACE_CLASS_NAME", className);
@@ -119,7 +140,6 @@ namespace UnityGameFramework.Editor
         {
             GroupMenuItemAttribute group = method.GetCustomAttribute<GroupMenuItemAttribute>();
             DynamicMenuItemAttribute dynmicAttr = method.GetCustomAttribute<DynamicMenuItemAttribute>();
-            Debug.Log(group);
 
             string nameJoin = string.Join(',', group.Names).Replace(",", "\",\"");
             string valuesJoin = string.Join(',', group.Values).Replace(",", "\",\"");
