@@ -344,8 +344,6 @@ namespace GameFramework.Setting
 
             float value =  m_SettingHelper.GetFloat(settingName, defaultValue);
 
-            Log.Debug($"Setting Manager: {settingName} ({value}) ({defaultValue})");
-
             return value;
         }
 

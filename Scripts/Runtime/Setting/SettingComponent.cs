@@ -213,7 +213,6 @@ namespace UnityGameFramework.Runtime
         {
             float value = m_SettingManager.GetFloat(settingName, defaultValue);
 
-            Log.Debug($"GetFloat {settingName} ({value}) ({defaultValue})");
 
             return value;
         }

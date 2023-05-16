@@ -216,11 +216,9 @@ namespace UnityGameFramework.Runtime
             string value = null;
             if (!m_Settings.TryGetValue(settingName, out value))
             {
-                Log.Debug("GetFloat, no value, useing defulat value.");
                 return defaultValue;
             }
 
-            Log.Debug($"GetFloat, ({value})");
             return float.Parse(value);
         }
 
@@ -292,7 +290,6 @@ namespace UnityGameFramework.Runtime
                     binaryWriter.Write(setting.Key);
                     binaryWriter.Write(setting.Value);
 
-                    Log.Debug($"Serialize ({setting.Key}) ({setting.Value})");
                 }
             }
         }
@@ -312,7 +309,6 @@ namespace UnityGameFramework.Runtime
                     string key = binaryReader.ReadString();
                     string value = binaryReader.ReadString();
 
-                    Log.Debug($"Deserialize ({key}) ({value})");
 
                     m_Settings.Add(key, value);
                 }
