@@ -242,6 +242,7 @@ namespace UnityGameFramework.Runtime
 
         private void OnDestroy()
         {
+            Debug.Log("BaseComponent OnDestroy.");
             GameFrameworkEntry.Shutdown();
         }
 

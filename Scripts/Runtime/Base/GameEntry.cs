@@ -20,6 +20,8 @@ namespace UnityGameFramework.Runtime
     {
         private static readonly GameFrameworkLinkedList<GameFrameworkComponent> s_GameFrameworkComponents = new GameFrameworkLinkedList<GameFrameworkComponent>();
 
+        public static event Action ShutDownCallback;
+
         /// <summary>
         /// 游戏框架所在的场景编号。
         /// </summary>
@@ -85,12 +87,16 @@ namespace UnityGameFramework.Runtime
         public static void Shutdown(ShutdownType shutdownType)
         {
             Log.Info("Shutdown Game Framework ({0})...", shutdownType);
+            Debug.Log($"Shutdown Game Framework ({shutdownType})...");
+
             BaseComponent baseComponent = GetComponent<BaseComponent>();
             if (baseComponent != null)
             {
                 baseComponent.Shutdown();
                 baseComponent = null;
             }
+
+            ShutDownCallback?.Invoke();
 
             s_GameFrameworkComponents.Clear();
 
