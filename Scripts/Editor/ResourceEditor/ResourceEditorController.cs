@@ -112,6 +112,12 @@ namespace UnityGameFramework.Editor.ResourceTools
                 }
 
                 m_SourceAssetRootPath = value.Replace('\\', '/');
+
+                if (m_SourceAssetRootPath.EndsWith("/"))
+                {
+                    m_SourceAssetRootPath = m_SourceAssetRootPath[..^1];
+                }
+
                 m_SourceAssetRoot = new SourceFolder(m_SourceAssetRootPath, null);
                 RefreshSourceAssetSearchPaths();
             }
