@@ -6,6 +6,7 @@ using System;
 using System.Text;
 using System.IO;
 using System.Linq;
+using System.Diagnostics.Eventing.Reader;
 
 namespace UnityGameFramework.Editor
 {
@@ -58,6 +59,31 @@ namespace UnityGameFramework.Editor
 
             classStr = classStr.Replace("__REPLACE_METHOD_BODY", sb.ToString());
             classStr = classStr.Replace("__REPLACE_INIT_CALL", sbInitCall.ToString());
+
+            {
+                var dir = Path.GetDirectoryName(csharpScriptPath);
+
+                var q = new Queue<string>();
+                q.Enqueue(dir);
+
+                while (q.Count > 0)
+                {
+                    var last = q.Dequeue();
+
+                    if (!Directory.Exists(last))
+                    {
+                        if (Directory.Exists(Path.GetDirectoryName(last)))
+                        {
+                            Directory.CreateDirectory(last);
+                        }
+                        else
+                        {
+                            q.Enqueue(last);
+                            q.Enqueue(Path.GetDirectoryName(last));
+                        }
+                    }
+                }
+            }
 
             File.WriteAllText(csharpScriptPath, classStr);
 
