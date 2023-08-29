@@ -103,6 +103,14 @@ namespace UnityGameFramework.Runtime
             m_EventManager.Unsubscribe(id, handler);
         }
 
+        public void SafeUnsubscribe(int id, EventHandler<GameEventArgs> handler)
+        {
+            if (Check(id, handler))
+            {
+                Unsubscribe(id, handler);
+            }
+        }
+
         /// <summary>
         /// 设置默认事件处理函数。
         /// </summary>
