@@ -242,6 +242,9 @@ namespace UnityGameFramework.Runtime
 
         private void OnDestroy()
         {
+            GameEntry.GetComponent<UIComponent>()?.CloseAllLoadingUIForms();
+            GameEntry.GetComponent<UIComponent>()?.CloseAllLoadedUIForms();
+
             Debug.Log("BaseComponent OnDestroy.");
             GameFrameworkEntry.Shutdown();
         }
