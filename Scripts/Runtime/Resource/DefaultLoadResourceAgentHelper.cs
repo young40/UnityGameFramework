@@ -284,6 +284,8 @@ namespace UnityGameFramework.Runtime
             }
             else
             {
+                Debug.Log("try load AB:");
+                Debug.Log(assetName);
                 if (assetType != null)
                 {
                     m_AssetBundleRequest = assetBundle.LoadAssetAsync(assetName, assetType);
