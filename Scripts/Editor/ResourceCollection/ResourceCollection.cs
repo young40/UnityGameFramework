@@ -229,7 +229,14 @@ namespace UnityGameFramework.Editor.ResourceTools
                     xmlResources.AppendChild(xmlElement);
                 }
 
+                SortedDictionary<string, Asset> sortedDict = new SortedDictionary<string, Asset>(StringComparer.Ordinal);
+
                 foreach (Asset asset in m_Assets.Values)
+                {
+                    sortedDict.Add(asset.Name, asset);
+                }
+
+                foreach (Asset asset in sortedDict.Values)
                 {
                     xmlElement = xmlDocument.CreateElement("Asset");
                     xmlAttribute = xmlDocument.CreateAttribute("Guid");
