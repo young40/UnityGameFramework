@@ -267,7 +267,7 @@ namespace UnityGameFramework.Runtime
             }
 
             bool has = assetBundle.Contains(assetName);
-            Debug.LogError("Contains " + assetName + " " + has);
+            //Debug.LogError("Contains " + assetName + " " + has);
 
             m_AssetName = assetName;
             if (isScene)
