@@ -183,7 +183,7 @@ namespace UnityGameFramework.Runtime
 
         private void Start()
         {
-            Debug.Log("DebuggerComponent: Start");
+            // Debug.Log("DebuggerComponent: Start");
 
             RegisterDebuggerWindow("Console", m_ConsoleWindow);
             RegisterDebuggerWindow("Information/System", m_SystemInformationWindow);
