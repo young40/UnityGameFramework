@@ -288,6 +288,11 @@ namespace UnityGameFramework.Runtime
             else
             {
                 Debug.Log("try load AB:" + assetName + " with type: " + assetType);
+                if (assetName == "Assets/Games/Ship/Animation/CameraMove2.anim")
+                {
+                    assetType = typeof(Animation);
+                }
+
                 if (assetType != null)
                 {
                     m_AssetBundleRequest = assetBundle.LoadAssetAsync(assetName, assetType);
@@ -537,7 +542,7 @@ namespace UnityGameFramework.Runtime
             {
                 if (m_AssetBundleRequest.isDone)
                 {
-                    Debug.Log("m_AssetBundleRequest Done.");
+                    Debug.Log("m_AssetBundleRequest Done. " + m_AssetName);
                     Debug.Log(m_AssetBundleRequest);
                     Debug.Log(m_AssetBundleRequest.asset);
                     Debug.Log(m_AssetBundleRequest.allAssets);
