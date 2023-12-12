@@ -287,7 +287,7 @@ namespace UnityGameFramework.Runtime
             }
             else
             {
-                //Debug.Log("try load AB:" + assetName + " with type: " + assetType);
+                Debug.Log("try load AB:" + assetName + " with type: " + assetType);
                 if (assetType != null)
                 {
                     m_AssetBundleRequest = assetBundle.LoadAssetAsync(assetName, assetType);
@@ -537,6 +537,18 @@ namespace UnityGameFramework.Runtime
             {
                 if (m_AssetBundleRequest.isDone)
                 {
+                    Debug.Log("m_AssetBundleRequest Done.");
+                    Debug.Log(m_AssetBundleRequest);
+                    Debug.Log(m_AssetBundleRequest.asset);
+                    Debug.Log(m_AssetBundleRequest.allAssets);
+                    if (m_AssetBundleRequest.allAssets != null)
+                    {
+                        foreach(var xx in m_AssetBundleRequest.allAssets)
+                        {
+                            Debug.Log(xx);
+                        }
+                    }
+
                     if (m_AssetBundleRequest.asset != null)
                     {
                         LoadResourceAgentHelperLoadCompleteEventArgs loadResourceAgentHelperLoadCompleteEventArgs = LoadResourceAgentHelperLoadCompleteEventArgs.Create(m_AssetBundleRequest.asset);
