@@ -16,7 +16,7 @@ namespace UnityGameFramework.Editor
     /// </summary>
     internal static class Type
     {
-        private static readonly string[] RuntimeAssemblyNames =
+        private static string[] RuntimeAssemblyNames =
         {
 #if UNITY_2017_3_OR_NEWER
             "UnityGameFramework.Runtime",
@@ -72,6 +72,8 @@ namespace UnityGameFramework.Editor
             return null;
         }
 
+        private static bool hasSearchDynamicAssembly = false;
+
         /// <summary>
         /// 在运行时程序集中获取指定基类的所有子类的名称。
         /// </summary>
@@ -79,6 +81,23 @@ namespace UnityGameFramework.Editor
         /// <returns>指定基类的所有子类的名称。</returns>
         internal static string[] GetRuntimeTypeNames(System.Type typeBase)
         {
+            if (!hasSearchDynamicAssembly)
+            {
+                hasSearchDynamicAssembly = true;
+
+                List<string> assemblyNames = new(RuntimeAssemblyNames);
+
+                foreach (var asm in System.AppDomain.CurrentDomain.GetAssemblies())
+                {
+                    if (asm.FullName.StartsWith("MyGame."))
+                    {
+                        assemblyNames.Add(asm.FullName);
+                    }
+                }
+
+                RuntimeAssemblyNames = assemblyNames.ToArray();
+            }
+
             return GetTypeNames(typeBase, RuntimeAssemblyNames);
         }
 
