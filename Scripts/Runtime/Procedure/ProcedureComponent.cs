@@ -30,6 +30,8 @@ namespace UnityGameFramework.Runtime
         [SerializeField]
         private string m_EntranceProcedureTypeName = null;
 
+        public ProcedureBase[] Procedures { get; private set; }
+
         /// <summary>
         /// 获取当前流程。
         /// </summary>
@@ -97,6 +99,8 @@ namespace UnityGameFramework.Runtime
                 Log.Error("Entrance procedure is invalid.");
                 yield break;
             }
+
+            Procedures = procedures;
 
             m_ProcedureManager.Initialize(GameFrameworkEntry.GetModule<IFsmManager>(), procedures);
 
