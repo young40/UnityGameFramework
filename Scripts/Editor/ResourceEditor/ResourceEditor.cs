@@ -490,6 +490,35 @@ namespace UnityGameFramework.Editor.ResourceTools
             EditorGUILayout.EndScrollView();
         }
 
+        private void AddFolder2Resource(SourceFolder folder)
+        {
+            int index = 0;
+            int count = folder.GetAssets().Length;
+
+            int dotIndex = folder.FromRootPath.IndexOf('.');
+            string name = dotIndex > 0 ? folder.FromRootPath.Substring(0, dotIndex) : folder.FromRootPath;
+            AddResource(name, null, false);
+            Resource resource = m_Controller.GetResource(name, null);
+            if (resource == null)
+            {
+                Debug.LogError("Error get resource for: " + folder.FromRootPath);
+                return;
+            }
+
+            foreach (SourceAsset sourceAsset in folder.GetAssets())
+            {
+                EditorUtility.DisplayProgressBar("Add Resources", Utility.Text.Format("{0}/{1} processing...", ++index, count), (float)index / count);
+
+                AssignAsset(sourceAsset, resource);
+            }
+
+            EditorUtility.DisplayProgressBar("Add Resources", "Complete processing...", 1f);
+            RefreshResourceTree();
+            EditorUtility.ClearProgressBar();
+            m_SelectedSourceAssets.Clear();
+            m_CachedSelectedSourceFolders.Clear();
+        }
+
         private void DrawSourceAssetsMenu()
         {
             HashSet<SourceAsset> selectedSourceAssets = GetSelectedSourceAssets();
@@ -569,7 +598,8 @@ namespace UnityGameFramework.Editor.ResourceTools
             }
 
             bool expand = IsExpandedSourceFolder(sourceFolder);
-            EditorGUILayout.BeginHorizontal();
+            Rect folderRect = EditorGUILayout.BeginHorizontal();
+
             {
                 bool select = IsSelectedSourceFolder(sourceFolder);
                 if (select != EditorGUILayout.Toggle(select, GUILayout.Width(12f + 14f * sourceFolder.Depth)))
@@ -599,6 +629,22 @@ namespace UnityGameFramework.Editor.ResourceTools
 #endif
                 EditorGUILayout.LabelField(sourceFolder.Name);
             }
+
+
+            Event current = Event.current;
+
+            if (current.type == EventType.ContextClick && folderRect.Contains(current.mousePosition))
+            {
+                GenericMenu menu = new GenericMenu();
+                menu.AddItem(new GUIContent("Add folder to one ab"), false, () =>
+                {
+                    AddFolder2Resource(sourceFolder);
+                });
+
+                menu.ShowAsContext();
+                current.Use();
+            }
+
             EditorGUILayout.EndHorizontal();
 
             m_CurrentSourceRowOnDraw++;
