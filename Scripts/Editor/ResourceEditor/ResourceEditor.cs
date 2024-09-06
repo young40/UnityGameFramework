@@ -497,6 +497,7 @@ namespace UnityGameFramework.Editor.ResourceTools
 
             int dotIndex = folder.FromRootPath.IndexOf('.');
             string name = dotIndex > 0 ? folder.FromRootPath.Substring(0, dotIndex) : folder.FromRootPath;
+            name += "_Dir";
             AddResource(name, null, false);
             Resource resource = m_Controller.GetResource(name, null);
             if (resource == null)
