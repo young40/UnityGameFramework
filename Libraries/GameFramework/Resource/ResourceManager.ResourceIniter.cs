@@ -8,6 +8,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using UnityGameFramework.Runtime;
 
 namespace GameFramework.Resource
 {
@@ -61,6 +62,7 @@ namespace GameFramework.Resource
                     throw new GameFrameworkException("Read-only path is invalid.");
                 }
 
+                Log.Debug(typeof(ResourceIniter) + " LoadBytes: " + Utility.Path.GetRemotePath(Path.Combine(m_ResourceManager.m_ReadOnlyPath, RemoteVersionListFileName)));
                 m_ResourceManager.m_ResourceHelper.LoadBytes(Utility.Path.GetRemotePath(Path.Combine(m_ResourceManager.m_ReadOnlyPath, RemoteVersionListFileName)), new LoadBytesCallbacks(OnLoadPackageVersionListSuccess, OnLoadPackageVersionListFailure), null);
             }
 
@@ -149,6 +151,8 @@ namespace GameFramework.Resource
                             group.AddResource(new ResourceName(resource.Name, resource.Variant, resource.Extension), resource.Length, resource.Length);
                         }
                     }
+
+                    Log.Debug(typeof(ResourceIniter) + " Load file list success with " + Utility.Path.GetRemotePath(Path.Combine(m_ResourceManager.m_ReadOnlyPath, RemoteVersionListFileName)));
 
                     ResourceInitComplete();
                 }

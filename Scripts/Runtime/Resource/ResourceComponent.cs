@@ -611,6 +611,7 @@ namespace UnityGameFramework.Runtime
                 Log.Fatal("Resource manager is invalid.");
                 return;
             }
+            Log.Debug(typeof(ResourceComponent) + ": Got resource manager, " + m_ResourceManager);
 
             m_ResourceManager.ResourceVerifyStart += OnResourceVerifyStart;
             m_ResourceManager.ResourceVerifySuccess += OnResourceVerifySuccess;

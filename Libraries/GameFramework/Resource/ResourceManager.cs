@@ -11,6 +11,8 @@ using GameFramework.ObjectPool;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using UnityEngine;
+using UnityGameFramework.Runtime;
 
 namespace GameFramework.Resource
 {
@@ -1109,6 +1111,8 @@ namespace GameFramework.Resource
 
             m_RefuseSetFlag = true;
             m_InitResourcesCompleteCallback = initResourcesCompleteCallback;
+
+            Log.Debug(typeof(ResourceManager) + "InitResources with Variant: " + (string.IsNullOrEmpty(m_CurrentVariant) ? "NULL" : m_CurrentVariant));
             m_ResourceIniter.InitResources(m_CurrentVariant);
         }
 
