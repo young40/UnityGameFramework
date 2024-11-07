@@ -204,6 +204,12 @@ namespace UnityGameFramework.Editor.ResourceTools
             set;
         }
 
+        public bool FillStreamingAssetsWithBuild
+        {
+            get;
+            set;
+        }
+
         public string BuildEventHandlerTypeName
         {
             get;
@@ -729,6 +735,19 @@ namespace UnityGameFramework.Editor.ResourceTools
 
                 m_BuildReport.LogInfo("Build resources for selected platforms complete.");
                 m_BuildReport.SaveReport();
+
+                if (isSuccess)
+                {
+                    CopyPackagedToStreamingAssets(this, this.Platforms.ToString());
+                    m_BuildReport.LogInfo("All old StreamingAssets files is DELETED");
+                    m_BuildReport.LogInfo("Fill StreamingAssets with current build complete.");
+                    Debug.Log("All old StreamingAssets files is DELETED");
+                    Debug.Log("Fill StreamingAssets with current build complete.");
+                }
+                else
+                {
+                    Debug.Log("StreamingAssets NOT changed.");
+                }
 
                 return true;
             }
@@ -1562,6 +1581,35 @@ namespace UnityGameFramework.Editor.ResourceTools
             }
 
             return DefaultExtension;
+        }
+
+        private static void CopyPackagedToStreamingAssets(ResourceBuilderController controller, string targetPath)
+        {
+            if (Directory.Exists(Application.streamingAssetsPath))
+            {
+                Directory.Delete(Application.streamingAssetsPath, true);
+            }
+            Directory.CreateDirectory(Application.streamingAssetsPath);
+
+            DirectoryCopy(Path.GetFullPath(Path.Combine(controller.OutputPackagePath, targetPath)), Path.GetFullPath(Application.streamingAssetsPath));
+        }
+
+        private static void DirectoryCopy(string src, string to)
+        {
+            if (!Directory.Exists(to))
+            {
+                Directory.CreateDirectory(to);
+            }
+
+            foreach (string dirpath in Directory.GetDirectories(src, "*", SearchOption.AllDirectories))
+            {
+                Directory.CreateDirectory(dirpath.Replace(src, to));
+            }
+
+            foreach (string path in Directory.GetFiles(src, "*.*", SearchOption.AllDirectories))
+            {
+                File.Copy(path, path.Replace(src, to));
+            }
         }
     }
 }

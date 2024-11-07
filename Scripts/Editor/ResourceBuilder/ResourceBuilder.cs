@@ -218,8 +218,14 @@ namespace UnityGameFramework.Editor.ResourceTools
                 {
                     EditorGUILayout.BeginHorizontal();
                     {
-                        EditorGUILayout.LabelField("Force Rebuild AssetBundle", GUILayout.Width(160f));
+                        EditorGUILayout.LabelField("Force Rebuild AssetBundle", GUILayout.Width(190f));
                         m_Controller.ForceRebuildAssetBundleSelected = EditorGUILayout.Toggle(m_Controller.ForceRebuildAssetBundleSelected);
+                    }
+                    EditorGUILayout.EndHorizontal();
+                    EditorGUILayout.BeginHorizontal();
+                    {
+                        EditorGUILayout.LabelField("Fill StreamingAssets With Build", GUILayout.Width(190f));
+                        m_Controller.FillStreamingAssetsWithBuild= EditorGUILayout.Toggle(m_Controller.FillStreamingAssetsWithBuild);
                     }
                     EditorGUILayout.EndHorizontal();
                     EditorGUILayout.BeginHorizontal();
