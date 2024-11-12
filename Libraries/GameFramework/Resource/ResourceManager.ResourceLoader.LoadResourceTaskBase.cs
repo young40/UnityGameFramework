@@ -142,7 +142,15 @@ namespace GameFramework.Resource
                 public void LoadMain(LoadResourceAgent agent, ResourceObject resourceObject)
                 {
                     m_ResourceObject = resourceObject;
-                    agent.Helper.LoadAsset(resourceObject.Target, AssetName, AssetType, IsScene);
+
+                    string name = AssetName;
+                    if (!string.IsNullOrEmpty(ResourceInfo.ResourceName.Variant))
+                    {
+                        var ext =System.IO.Path.GetExtension(AssetName);
+                        name = name.Replace(ext, "." + ResourceInfo.ResourceName.Variant + ext);
+                    }
+
+                    agent.Helper.LoadAsset(resourceObject.Target, name, AssetType, IsScene);
                 }
 
                 public virtual void OnLoadAssetSuccess(LoadResourceAgent agent, object asset, float duration)

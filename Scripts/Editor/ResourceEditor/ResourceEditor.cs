@@ -546,10 +546,22 @@ namespace UnityGameFramework.Editor.ResourceTools
                     foreach (SourceAsset sourceAsset in selectedSourceAssets)
                     {
                         EditorUtility.DisplayProgressBar("Add Resources", Utility.Text.Format("{0}/{1} processing...", ++index, count), (float)index / count);
+
+                        string variant = null;
+                        if (sourceAsset.FromRootPath.Contains(".venn"))
+                        {
+                            variant = "venn";
+                        }
+                        if (sourceAsset.FromRootPath.Contains(".vcnn"))
+                        {
+                            variant = "vcnn";
+                        }
+
                         int dotIndex = sourceAsset.FromRootPath.IndexOf('.');
                         string name = dotIndex > 0 ? sourceAsset.FromRootPath.Substring(0, dotIndex) : sourceAsset.FromRootPath;
-                        AddResource(name, null, false);
-                        Resource resource = m_Controller.GetResource(name, null);
+
+                        AddResource(name, variant, false);
+                        Resource resource = m_Controller.GetResource(name, variant);
                         if (resource == null)
                         {
                             continue;

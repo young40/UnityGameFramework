@@ -123,7 +123,9 @@ namespace GameFramework.Resource
                                 dependencyAssetNames[index++] = assets[dependencyAssetIndex].Name;
                             }
 
-                            m_ResourceManager.m_AssetInfos.Add(asset.Name, new AssetInfo(asset.Name, resourceName, dependencyAssetNames));
+                            string newName = string.IsNullOrEmpty(resourceName.Variant) ? asset.Name : asset.Name.Replace("." + resourceName.Variant, "");
+
+                            m_ResourceManager.m_AssetInfos.Add(newName, new AssetInfo(asset.Name, resourceName, dependencyAssetNames));
                         }
 
                         string fileSystemName = null;
