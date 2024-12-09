@@ -46,6 +46,8 @@ namespace UnityGameFramework.Runtime
         private GameFrameworkLinkedList<LoadAssetInfo> m_LoadAssetInfos = null;
         private GameFrameworkLinkedList<LoadSceneInfo> m_LoadSceneInfos = null;
         private GameFrameworkLinkedList<UnloadSceneInfo> m_UnloadSceneInfos = null;
+        
+        private string m_CurrentVariant;
 
         /// <summary>
         /// 获取资源只读区路径。
@@ -83,13 +85,7 @@ namespace UnityGameFramework.Runtime
         /// <summary>
         /// 获取当前变体。
         /// </summary>
-        public string CurrentVariant
-        {
-            get
-            {
-                return null;
-            }
-        }
+        public string CurrentVariant => m_CurrentVariant;
 
         /// <summary>
         /// 获取单机模式版本资源列表序列化器。
@@ -756,7 +752,7 @@ namespace UnityGameFramework.Runtime
         /// <param name="currentVariant">当前变体。</param>
         public void SetCurrentVariant(string currentVariant)
         {
-            throw new NotSupportedException("SetCurrentVariant");
+            this.m_CurrentVariant = currentVariant;
         }
 
         /// <summary>
