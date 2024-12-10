@@ -307,6 +307,30 @@ namespace GameFramework.Resource
             {
                 ResourceInfo resourceInfo = null;
                 string[] dependencyAssetNames = null;
+
+                if (!assetName.Contains("/Lang/"))
+                {
+                    string an = null;
+                    if (assetName.StartsWith("Assets/Games"))
+                    {
+                        //Assets/Games/GoKart/Material/MBlue.cs
+                        int gi = assetName.IndexOf("Games/");
+                        int g2 = assetName.IndexOf("/", gi + 6);
+                        var xxx = assetName.Substring(0, g2);
+
+                        an = assetName.Replace(xxx, xxx + "/Lang/" + m_ResourceManager.CurrentVariant);
+                    }
+                    else if (assetName.StartsWith("Assets/"))
+                    {
+                        an = assetName.Replace("Assets/", "Assets/Lang/" + m_ResourceManager.CurrentVariant + "/");
+                    }
+
+                    if (!string.IsNullOrEmpty(an) && CheckAsset(an, out resourceInfo, out dependencyAssetNames))
+                    {
+                        assetName = an;
+                    }
+                }
+
                 if (!CheckAsset(assetName, out resourceInfo, out dependencyAssetNames))
                 {
                     string errorMessage = Utility.Text.Format("Can not load asset '{0}'.", assetName);

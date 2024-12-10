@@ -17,6 +17,8 @@ namespace GameFramework.Resource
             {
                 private LoadAssetCallbacks m_LoadAssetCallbacks;
 
+                private string m_realAssetName;
+
                 public LoadAssetTask()
                 {
                     m_LoadAssetCallbacks = null;
@@ -34,6 +36,16 @@ namespace GameFramework.Resource
                 {
                     LoadAssetTask loadAssetTask = ReferencePool.Acquire<LoadAssetTask>();
                     loadAssetTask.Initialize(assetName, assetType, priority, resourceInfo, dependencyAssetNames, userData);
+
+                    loadAssetTask.m_realAssetName = assetName;
+                    if (assetName.Contains("/Lang/"))
+                    {
+                        int i = assetName.IndexOf("Lang/");
+                        string s = assetName.Substring(i, 8);
+
+                        loadAssetTask.m_realAssetName = assetName.Replace(s, "");
+                    }
+
                     loadAssetTask.m_LoadAssetCallbacks = loadAssetCallbacks;
                     return loadAssetTask;
                 }
@@ -49,7 +61,7 @@ namespace GameFramework.Resource
                     base.OnLoadAssetSuccess(agent, asset, duration);
                     if (m_LoadAssetCallbacks.LoadAssetSuccessCallback != null)
                     {
-                        m_LoadAssetCallbacks.LoadAssetSuccessCallback(AssetName, asset, duration, UserData);
+                        m_LoadAssetCallbacks.LoadAssetSuccessCallback(m_realAssetName, asset, duration, UserData);
                     }
                 }
 
@@ -58,7 +70,7 @@ namespace GameFramework.Resource
                     base.OnLoadAssetFailure(agent, status, errorMessage);
                     if (m_LoadAssetCallbacks.LoadAssetFailureCallback != null)
                     {
-                        m_LoadAssetCallbacks.LoadAssetFailureCallback(AssetName, status, errorMessage, UserData);
+                        m_LoadAssetCallbacks.LoadAssetFailureCallback(m_realAssetName, status, errorMessage, UserData);
                     }
                 }
 
@@ -69,7 +81,7 @@ namespace GameFramework.Resource
                     {
                         if (m_LoadAssetCallbacks.LoadAssetUpdateCallback != null)
                         {
-                            m_LoadAssetCallbacks.LoadAssetUpdateCallback(AssetName, progress, UserData);
+                            m_LoadAssetCallbacks.LoadAssetUpdateCallback(m_realAssetName, progress, UserData);
                         }
                     }
                 }
@@ -79,7 +91,7 @@ namespace GameFramework.Resource
                     base.OnLoadDependencyAsset(agent, dependencyAssetName, dependencyAsset);
                     if (m_LoadAssetCallbacks.LoadAssetDependencyAssetCallback != null)
                     {
-                        m_LoadAssetCallbacks.LoadAssetDependencyAssetCallback(AssetName, dependencyAssetName, LoadedDependencyAssetCount, TotalDependencyAssetCount, UserData);
+                        m_LoadAssetCallbacks.LoadAssetDependencyAssetCallback(m_realAssetName, dependencyAssetName, LoadedDependencyAssetCount, TotalDependencyAssetCount, UserData);
                     }
                 }
             }
