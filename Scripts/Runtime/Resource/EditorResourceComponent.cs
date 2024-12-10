@@ -1664,6 +1664,7 @@ namespace UnityGameFramework.Runtime
             return null;
         }
 
+#if UNITY_EDITOR
         private string GetRealAssetPath(string assetName)
         {
             // Debug.Log("Checking: " + assetName);
@@ -1704,6 +1705,7 @@ namespace UnityGameFramework.Runtime
 
             return assetName;
         }
+#endif
 
         [StructLayout(LayoutKind.Auto)]
         private struct LoadAssetInfo
