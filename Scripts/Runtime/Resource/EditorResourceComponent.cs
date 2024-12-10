@@ -587,11 +587,11 @@ namespace UnityGameFramework.Runtime
 #if UNITY_EDITOR
                             if (loadAssetInfo.AssetType != null)
                             {
-                                asset = UnityEditor.AssetDatabase.LoadAssetAtPath(loadAssetInfo.AssetName, loadAssetInfo.AssetType);
+                                asset = UnityEditor.AssetDatabase.LoadAssetAtPath(GetRealAssetPath(loadAssetInfo.AssetName), loadAssetInfo.AssetType);
                             }
                             else
                             {
-                                asset = UnityEditor.AssetDatabase.LoadMainAssetAtPath(loadAssetInfo.AssetName);
+                                asset = UnityEditor.AssetDatabase.LoadMainAssetAtPath(GetRealAssetPath(loadAssetInfo.AssetName));
                             }
 
                             if (m_EnableCachedAssets && asset != null)
@@ -934,8 +934,9 @@ namespace UnityGameFramework.Runtime
         /// <returns>检查资源是否存在的结果。</returns>
         public HasAssetResult HasAsset(string assetName)
         {
+            Debug.Log("HasAsset: " + assetName);
 #if UNITY_EDITOR
-            UnityEngine.Object obj = UnityEditor.AssetDatabase.LoadMainAssetAtPath(assetName);
+            UnityEngine.Object obj = UnityEditor.AssetDatabase.LoadMainAssetAtPath(GetRealAssetPath(assetName));
             if (obj == null)
             {
                 return HasAssetResult.NotExist;
@@ -1661,6 +1662,47 @@ namespace UnityGameFramework.Runtime
             }
 
             return null;
+        }
+
+        private string GetRealAssetPath(string assetName)
+        {
+            // Debug.Log("Checking: " + assetName);
+            if (!assetName.StartsWith("Assets/Lang") && !assetName.StartsWith("Assets/Games"))
+            {
+                var an = assetName.Replace("Assets/", "Assets/Lang/" + m_CurrentVariant + "/");
+                // Debug.Log("Checking: " + an);
+
+                if (UnityEditor.AssetDatabase.AssetPathExists(an))
+                {
+                    // Debug.Log("Checking: " + an + "   true");
+                    return an;
+                }
+                else
+                {
+                    // Debug.Log("Checking: " + an + "   false");
+                }
+            }
+            else if (assetName.StartsWith("Assets/Games/"))
+            {
+                var anArray = assetName.Split('/');
+                if (anArray[3] != "Lang")
+                {
+                    var an = assetName.Replace("Assets/Games/" + anArray[2] + "/", "Assets/Games/" + anArray[2] + "/Lang/" + m_CurrentVariant + "/");
+
+                    // Debug.Log("Checking: " + an);
+                    if (UnityEditor.AssetDatabase.AssetPathExists(an))
+                    {
+                        // Debug.Log("Checking: " + an + "   true");
+                        return an;
+                    }
+                    else
+                    {
+                        // Debug.Log("Checking: " + an + "   false");
+                    }
+                }
+            }
+
+            return assetName;
         }
 
         [StructLayout(LayoutKind.Auto)]
