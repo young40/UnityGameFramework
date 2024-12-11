@@ -82,6 +82,10 @@ namespace UnityGameFramework.Editor
                 case RuntimePlatform.OSXEditor:
                     Process.Start("open", folder);
                     break;
+                
+                case RuntimePlatform.LinuxEditor:
+                    Process.Start("open", folder);
+                    break;
 
                 default:
                     throw new GameFrameworkException(Utility.Text.Format("Not support open folder on '{0}' platform.", Application.platform));
