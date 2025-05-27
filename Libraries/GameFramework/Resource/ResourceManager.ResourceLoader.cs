@@ -320,6 +320,12 @@ namespace GameFramework.Resource
 
                         an = assetName.Replace(xxx, xxx + "/Lang/" + m_ResourceManager.CurrentVariant);
                     }
+                    else if (assetName.StartsWith("Assets/Core/Modules"))
+                    {
+                        int index = assetName.IndexOf('/', 20);
+
+                        an = assetName.Substring(0, index) + "/Lang/" + m_ResourceManager.m_CurrentVariant + "/" + assetName.Substring(index + 1);
+                    }
                     else if (assetName.StartsWith("Assets/"))
                     {
                         an = assetName.Replace("Assets/", "Assets/Lang/" + m_ResourceManager.CurrentVariant + "/");
