@@ -1668,7 +1668,7 @@ namespace UnityGameFramework.Runtime
         private string GetRealAssetPath(string assetName)
         {
             // Debug.Log("Checking: " + assetName);
-            if (!assetName.StartsWith("Assets/Lang") && !assetName.StartsWith("Assets/Games"))
+            if (!assetName.StartsWith("Assets/Lang") && !assetName.StartsWith("Assets/Games") && !assetName.StartsWith("Assets/Core/Modules"))
             {
                 var an = assetName.Replace("Assets/", "Assets/Lang/" + m_CurrentVariant + "/");
                 // Debug.Log("Checking: " + an);
@@ -1701,6 +1701,21 @@ namespace UnityGameFramework.Runtime
                         // Debug.Log("Checking: " + an + "   false");
                     }
                 }
+            }
+            else if (assetName.StartsWith("Assets/Core/Modules/"))
+            {
+                //Assets/Core/Modules/UIGamePause/ButtonPause.png
+                //Assets/Core/Modules/UIGamePause/Lang/EN/ButtonPause.png
+                
+                int index = assetName.IndexOf('/', 20);
+                if (index != -1 && assetName.Substring(index, 5) == "/Lang/")
+                {
+                    return assetName;
+                }
+
+                string newAssetName = assetName.Substring(0, index) + "/Lang/" + m_CurrentVariant + "/" + assetName.Substring(index + 1);
+
+                return newAssetName;
             }
 
             return assetName;
