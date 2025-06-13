@@ -10,6 +10,7 @@ using GameFramework.Localization;
 using GameFramework.Resource;
 using System;
 using UnityEngine;
+using UnityEngine.Profiling;
 
 namespace UnityGameFramework.Runtime
 {
@@ -229,7 +230,9 @@ namespace UnityGameFramework.Runtime
 
         private void Update()
         {
+            Profiler.BeginSample("BaseComponent_Update_Test");
             GameFrameworkEntry.Update(Time.deltaTime, Time.unscaledDeltaTime);
+            Profiler.EndSample();
         }
 
         private void OnApplicationQuit()
